@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Jogo da Velha Online</title>
+  <meta name="description" content="Jogo da velha online e gratuito para jogar com amigos via link, contra a máquina ou no mesmo dispositivo.">
+  <link rel="stylesheet" href="style.css">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;600;700;800&display=swap" rel="stylesheet">
+  <!-- PeerJS para conexão multiplayer P2P em tempo real sem precisar de servidor backend próprio -->
+  <script src="https://unpkg.com/peerjs@1.5.4/dist/peerjs.min.js"></script>
+</head>
+<body>
+  <div class="app-container">
+    <header class="header">
+      <div class="logo-area">
+        <h1>Jogo da Velha</h1>
+        <span class="badge">Online</span>
+      </div>
+      <button id="sound-btn" class="icon-btn" title="Alternar som" aria-label="Alternar som">
+        <span id="sound-icon">🔊</span>
+      </button>
+    </header>
+
+    <!-- Seletor de Modo de Jogo -->
+    <nav class="mode-selector">
+      <button class="mode-btn active" data-mode="online">
+        <span>🌐</span> Online
+      </button>
+      <button class="mode-btn" data-mode="ai">
+        <span>🤖</span> Vs Máquina
+      </button>
+      <button class="mode-btn" data-mode="local">
+        <span>👥</span> 2 Jogadores
+      </button>
+    </nav>
+
+    <!-- Painel de Conexão Online -->
+    <section id="online-panel" class="panel online-panel">
+      <div id="online-setup" class="online-setup">
+        <div class="online-actions">
+          <button id="btn-create-room" class="btn btn-primary">
+            ➕ Criar Sala Online
+          </button>
+          <div class="divider">ou</div>
+          <div class="join-room-box">
+            <input type="text" id="join-room-id" placeholder="Digite o código da sala" maxlength="20">
+            <button id="btn-join-room" class="btn btn-secondary">Entrar</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Informações da Sala Criada -->
+      <div id="room-info" class="room-info hidden">
+        <div class="room-status-badge" id="room-status-badge">
+          <span class="dot pulse"></span>
+          <span id="room-status-text">Aguardando adversário...</span>
+        </div>
+        <div class="room-share">
+          <label>Compartilhe este código ou link com um amigo:</label>
+          <div class="copy-input-group">
+            <input type="text" id="room-share-input" readonly>
+            <button id="btn-copy-link" class="btn btn-outline" title="Copiar Link">
+              📋 Copiar Link
+            </button>
+          </div>
+          <span id="copy-feedback" class="copy-feedback hidden">Copiado com sucesso! ✨</span>
+        </div>
+        <div class="player-identity" id="player-identity">
+          Você está jogando como: <strong id="my-symbol-badge">X</strong>
+        </div>
+      </div>
+    </section>
+
+    <!-- Painel de Opções da IA (visível apenas no modo IA) -->
+    <section id="ai-panel" class="panel ai-panel hidden">
+      <label for="ai-difficulty">Dificuldade da IA:</label>
+      <select id="ai-difficulty" class="select-difficulty">
+        <option value="easy">Fácil (comete erros)</option>
+        <option value="hard" selected>Imbatível (Minimax IA)</option>
+      </select>
+    </section>
+
+    <!-- Placar -->
+    <div class="scoreboard">
+      <div class="score-card player-x" id="card-x">
+        <span class="score-label" id="label-x">Jogador X</span>
+        <span class="score-value" id="score-x">0</span>
+      </div>
+      <div class="score-card ties">
+        <span class="score-label">Empates</span>
+        <span class="score-value" id="score-ties">0</span>
+      </div>
+      <div class="score-card player-o" id="card-o">
+        <span class="score-label" id="label-o">Jogador O</span>
+        <span class="score-value" id="score-o">0</span>
+      </div>
+    </div>
+
+    <!-- Indicador de Turno / Mensagem de Status -->
+    <div class="turn-banner" id="turn-banner">
+      <span id="turn-text">Vez do Jogador <strong>X</strong></span>
+    </div>
+
+    <!-- Tabuleiro do Jogo -->
+    <main class="board-wrapper">
+      <div class="board" id="board">
+        <button class="cell" data-index="0" aria-label="Quadrado 1"></button>
+        <button class="cell" data-index="1" aria-label="Quadrado 2"></button>
+        <button class="cell" data-index="2" aria-label="Quadrado 3"></button>
+        <button class="cell" data-index="3" aria-label="Quadrado 4"></button>
+        <button class="cell" data-index="4" aria-label="Quadrado 5"></button>
+        <button class="cell" data-index="5" aria-label="Quadrado 6"></button>
+        <button class="cell" data-index="6" aria-label="Quadrado 7"></button>
+        <button class="cell" data-index="7" aria-label="Quadrado 8"></button>
+        <button class="cell" data-index="8" aria-label="Quadrado 9"></button>
+      </div>
+    </main>
+
+    <!-- Controles de Jogo -->
+    <footer class="game-controls">
+      <button id="btn-restart" class="btn btn-outline">🔄 Reiniciar Rodada</button>
+      <button id="btn-reset-score" class="btn btn-ghost">Zerar Placar</button>
+    </footer>
+
+    <!-- Dica de Hospedagem no GitHub -->
+    <div class="github-footer">
+      <p>Hospedado no <strong>GitHub Pages</strong> | 100% gratuito e sem cadastro</p>
+    </div>
+  </div>
+
+  <script src="script.js"></script>
+</body>
+</html>
